@@ -3,9 +3,11 @@
     "name": "noovies",
     "slug": "noovies",
     "version": "1.0.0",
-    "assetBundlePatterns": [
-      "**/*"
-    ]
+    "splash": {
+      "image": "./assets/latte.jpeg",
+      "resizeMode": "contain"
+    },
+    "assetBundlePatterns": ["**/*"]
   },
   "name": "noovies"
 }
