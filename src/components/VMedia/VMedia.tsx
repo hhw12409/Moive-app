@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import Poster from "../Poster/Poster";
 import Votes from "../Votes/Votes";
 import { VMovie, VColumn, Overview, Release, Title } from "./VMedia.styles";
@@ -47,4 +47,4 @@ const VMedia: React.FC<VMediaProps> = ({
   );
 };
 
-export default VMedia;
+export default memo(VMedia);

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import Poster from "../Poster/Poster";
 import Votes from "../Votes/Votes";
 import { Movie, Title } from "./HMedia.styles";
@@ -18,12 +18,12 @@ const HMedia: React.FC<HMediaProps> = ({
     <Movie>
       <Poster path={posterPath} />
       <Title>
-        {originalTitle.slice(0, 13)}
-        {originalTitle.length > 13 ? "..." : null}
+        {originalTitle.slice(0, 12)}
+        {originalTitle.length > 12 ? "..." : null}
       </Title>
       <Votes votes={voteAverage} />
     </Movie>
   );
 };
 
-export default HMedia;
+export default memo(HMedia);
