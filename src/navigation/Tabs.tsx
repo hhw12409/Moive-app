@@ -2,9 +2,9 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useColorScheme } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import Movies from "../screens/Movies";
-import Search from "../screens/Search";
-import Tv from "../screens/Tv";
+import Movies from "../screens/Movies/Movies";
+import Search from "../screens/Search/Search";
+import Tv from "../screens/Tv/Tv";
 import COLORS from "../constants/colors";
 
 const Tab = createBottomTabNavigator();

@@ -6,6 +6,9 @@ import Root from "./src/navigation/Root";
 import { useColorScheme } from "react-native";
 import { ThemeProvider } from "styled-components";
 import { darkTheme, lightTheme } from "./theme";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 export default function App() {
   const [appIsReady, setAppIsReady] = useState(false);
@@ -28,10 +31,12 @@ export default function App() {
   }
 
   return (
-    <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
-      <NavigationContainer>
-        <Root />
-      </NavigationContainer>
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
+        <NavigationContainer>
+          <Root />
+        </NavigationContainer>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 }

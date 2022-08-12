@@ -6,7 +6,7 @@ import COLORS from "../constants/colors";
 const ScreenOne = ({ navigation: { navigate } }) => {
   return (
     <TouchableOpacity onPress={() => navigate("Two")}>
-      <Text>Go to Two</Text>
+      <Text>Go to</Text>
     </TouchableOpacity>
   );
 };
