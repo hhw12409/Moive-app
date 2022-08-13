@@ -28,25 +28,42 @@ export interface MoiveResponse extends BaseResponse {
   results: Movie[];
 }
 
-const getTrending = async () => {
-  const response = await fetch(
-    `${BASE_URL}/trending/movie/week?api_key=${API_KEY}`
-  );
-  return await response.json();
+export const moviesApi = {
+  getTrending: async () => {
+    const response = await fetch(
+      `${BASE_URL}/trending/movie/week?api_key=${API_KEY}`
+    );
+    return await response.json();
+  },
+  getUpComing: async () => {
+    const response = await fetch(
+      `${BASE_URL}/movie/upcoming?api_key=${API_KEY}&language=en-US&page=1&region=KR`
+    );
+    return await response.json();
+  },
+  getNowPlaying: async () => {
+    const response = await fetch(
+      `${BASE_URL}/movie/now_playing?api_key=${API_KEY}&language=en-US&page=1&region=KR`
+    );
+    return await response.json();
+  },
 };
 
-const getUpComing = async () => {
-  const response = await fetch(
-    `${BASE_URL}/movie/upcoming?api_key=${API_KEY}&language=en-US&page=1&region=KR`
-  );
-  return await response.json();
+export const tvApi = {
+  getTrending: async () => {
+    const response = await fetch(
+      `${BASE_URL}/trending/tv/week?api_key=${API_KEY}`
+    );
+    return await response.json();
+  },
+  getAiringToday: async () => {
+    const respone = await fetch(
+      `${BASE_URL}/tv/airing_today?api_key=${API_KEY}`
+    );
+    return await respone.json();
+  },
+  getTopRated: async () => {
+    const response = await fetch(`${BASE_URL}/tv/top_rated?api_key=${API_KEY}`);
+    return await response.json();
+  },
 };
-
-const getNowPlaying = async () => {
-  const response = await fetch(
-    `${BASE_URL}/movie/now_playing?api_key=${API_KEY}&language=en-US&page=1&region=KR`
-  );
-  return await response.json();
-};
-
-export const moviesApi = { getTrending, getUpComing, getNowPlaying };

@@ -1,21 +1,17 @@
 import React from "react";
 import Swiper from "react-native-swiper";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { Dimensions, ActivityIndicator, FlatList } from "react-native";
+import { Dimensions, FlatList } from "react-native";
 import Slide from "../../components/Slide/Slide";
 import HMedia from "../../components/HMedia/HMedia";
 import VMedia from "../../components/VMedia/VMedia";
 import { QueryClient, useQuery } from "@tanstack/react-query";
 import { MoiveResponse, moviesApi } from "../../apis/apis";
-import {
-  Loader,
-  ListContainer,
-  ListTitle,
-  TrendingScroll,
-  ComingSoonTitle,
-  VSeperator,
-  HSeperator,
-} from "./Movie.style";
+import { TrendingScroll, VSeperator, HSeperator } from "./Movie.style";
+import Loader from "../../components/Loader/Loader";
+import { ListContainer } from "../../components/@shared/ListContainer/ListContainer.styles";
+import { ComingSoonTitle } from "../../components/@shared/ComingSoonTitle/ComingSoonTitle.styles";
+import { ListTitle } from "../../components/@shared/ListTitle/ListTitle.styles";
 
 const queryClinet = new QueryClient();
 
@@ -49,9 +45,7 @@ const Movies: React.FC<NativeStackScreenProps<any, "Movies">> = () => {
   const refreshing =
     isRefetchingNowPlaying || isRefetchingUpComing || isRefetchingTrending;
   return loading ? (
-    <Loader>
-      <ActivityIndicator size="large" />
-    </Loader>
+    <Loader />
   ) : (
     <FlatList
       onRefresh={onRefresh}
