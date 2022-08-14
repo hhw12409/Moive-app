@@ -47,6 +47,13 @@ export const moviesApi = {
     );
     return await response.json();
   },
+  search: async ({ queryKey }: any) => {
+    const [_, query] = queryKey;
+    const response = await fetch(
+      `${BASE_URL}/search/movie?api_key=${API_KEY}&language=en-US&query=${query}`
+    );
+    return await response.json();
+  },
 };
 
 export const tvApi = {
@@ -64,6 +71,13 @@ export const tvApi = {
   },
   getTopRated: async () => {
     const response = await fetch(`${BASE_URL}/tv/top_rated?api_key=${API_KEY}`);
+    return await response.json();
+  },
+  search: async ({ queryKey }: any) => {
+    const [_, query] = queryKey;
+    const response = await fetch(
+      `${BASE_URL}/search/tv?api_key=${API_KEY}&language=en-US&query=${query}`
+    );
     return await response.json();
   },
 };

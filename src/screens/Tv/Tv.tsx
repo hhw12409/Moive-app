@@ -1,12 +1,13 @@
-import { useQuery } from "@tanstack/react-query";
-import React from "react";
-import { ScrollView, FlatList } from "react-native";
+import { QueryClient, useQuery } from "@tanstack/react-query";
+import React, { useState } from "react";
+import { RefreshControl, ScrollView } from "react-native";
 import { tvApi } from "../../apis/apis";
 import HList from "../../components/HList/HList";
-import HMedia from "../../components/HMedia/HMedia";
 import Loader from "../../components/Loader/Loader";
 
 const Tv = () => {
+  const queryClinet = new QueryClient();
+  const [refreshing, setRefreshing] = useState(false);
   const { isLoading: todayLoading, data: todayData } = useQuery(
     ["tv", "today"],
     tvApi.getAiringToday
@@ -20,53 +21,24 @@ const Tv = () => {
     tvApi.getTrending
   );
   const loading = todayLoading || topLoading || trendingLoading;
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await queryClinet.refetchQueries(["tv"]);
+    setRefreshing(false);
+  };
   if (loading) {
     return <Loader />;
   }
   return (
-    <ScrollView>
-      <HList title="Trending Tv">
-        <FlatList
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          data={trendingData.results}
-          renderItem={({ item }) => (
-            <HMedia
-              posterPath={item.poster_path}
-              originalTitle={item.original_name}
-              voteAverage={item.vote_average}
-            />
-          )}
-        />
-      </HList>
-      <HList title="Airing Today">
-        <FlatList
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          data={todayData.results}
-          renderItem={({ item }) => (
-            <HMedia
-              posterPath={item.poster_path}
-              originalTitle={item.original_name}
-              voteAverage={item.vote_average}
-            />
-          )}
-        />
-      </HList>
-      <HList title="Top Rated TV">
-        <FlatList
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          data={topData.results}
-          renderItem={({ item }) => (
-            <HMedia
-              posterPath={item.poster_path}
-              originalTitle={item.original_name}
-              voteAverage={item.vote_average}
-            />
-          )}
-        />
-      </HList>
+    <ScrollView
+      contentContainerStyle={{ paddingVertical: 30 }}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
+      <HList title="Trending TV" data={trendingData.results} />
+      <HList title="Airing Today" data={todayData.results} />
+      <HList title="Top Rated TV" data={topData.results} />
     </ScrollView>
   );
 };
