@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect } from 'react';
-import { StyleSheet, Linking } from 'react-native';
+import { StyleSheet, Linking, Share, Platform } from 'react-native';
 import { Movie, moviesApi, TV, tvApi } from '../../apis/apis';
 import Poster from '../../components/Poster/Poster';
 import { makeImagePath } from '../../utils/utils';
@@ -11,6 +11,7 @@ import { useQuery } from '@tanstack/react-query';
 import Loader from '../../components/Loader/Loader';
 import { Ionicons } from '@expo/vector-icons';
 import * as WebBrowser from 'expo-web-browser';
+import SharedButton from '../../components/@shared/SharedButton/SharedButton';
 
 type RootStackParamList = {
   // screen이름 : Params
@@ -25,11 +26,34 @@ const Detail: React.FC<DetailScreenProps> = ({ navigation: { setOptions }, route
     [isMovie ? 'movies' : 'tv', params.id],
     isMovie ? moviesApi.detail : tvApi.detail
   );
+  const shareMedia = async () => {
+    const isAndroid = Platform.OS === 'android';
+    const homepage = isMovie ? `https://www.imdb.com/title/${data.imdb_id}` : data.homepage;
+    if (isAndroid) {
+      await Share.share({
+        message: `${params.overview}\n Check it out : ${homepage}`,
+        title: 'original_title' in params ? params.original_title : params.original_name,
+      });
+    } else {
+      await Share.share({
+        url: homepage,
+        title: 'original_title' in params ? params.original_title : params.original_name,
+      });
+    }
+  };
   useEffect(() => {
     setOptions({
       title: 'original_title' in params ? 'Movie' : 'TV Show',
+      headerRight: () => <SharedButton onPress={shareMedia} />,
     });
   }, []);
+  useEffect(() => {
+    if (data) {
+      setOptions({
+        headerRight: () => <SharedButton onPress={shareMedia} />,
+      });
+    }
+  }, [data]);
 
   const openYoutubeLink = async (videoId: string) => {
     const baseUrl = `http://m.youtube.com/watch?v=${videoId}`;
