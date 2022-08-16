@@ -1,6 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { memo } from 'react';
 import { TouchableOpacity } from 'react-native';
+import { Movie } from '../../apis/apis';
 import Poster from '../Poster/Poster';
 import Votes from '../Votes/Votes';
 import { VMovie, VColumn, Overview, Release, Title } from './VMedia.styles';
@@ -11,22 +12,17 @@ interface VMediaProps {
   overview: string;
   releaseDate?: string;
   voteAverage?: number;
+  fullData: Movie;
 }
 
-const VMedia: React.FC<VMediaProps> = ({
-  posterPath,
-  originalTitle,
-  overview,
-  releaseDate,
-  voteAverage,
-}) => {
+const VMedia: React.FC<VMediaProps> = ({ posterPath, originalTitle, overview, releaseDate, voteAverage, fullData }) => {
   const navigation = useNavigation();
   const goToDetail = () => {
     //@ts-ignore
     navigation.navigate('Stack', {
       screen: 'Detail',
       params: {
-        originalTitle,
+        ...fullData,
       },
     });
   };
@@ -35,9 +31,7 @@ const VMedia: React.FC<VMediaProps> = ({
       <VMovie>
         <Poster path={posterPath} />
         <VColumn>
-          <Title>
-            {originalTitle.length > 30 ? `${originalTitle.slice(0, 30)}...` : originalTitle}
-          </Title>
+          <Title>{originalTitle.length > 30 ? `${originalTitle.slice(0, 30)}...` : originalTitle}</Title>
           {releaseDate ? (
             <Release>
               {new Date(releaseDate).toLocaleDateString('ko', {
@@ -48,9 +42,7 @@ const VMedia: React.FC<VMediaProps> = ({
             </Release>
           ) : null}
           {voteAverage ? <Votes votes={voteAverage} /> : null}
-          <Overview>
-            {overview !== '' && overview.length > 140 ? `${overview.slice(0, 140)}...` : overview}
-          </Overview>
+          <Overview>{overview !== '' && overview.length > 140 ? `${overview.slice(0, 140)}...` : overview}</Overview>
         </VColumn>
       </VMovie>
     </TouchableOpacity>

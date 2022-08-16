@@ -6,6 +6,7 @@ import { StyleSheet, View } from 'react-native';
 import { BgImg, Title, Wrapper, Column, Overview, Votes } from './Slide.styles';
 import Poster from '../Poster/Poster';
 import { useNavigation } from '@react-navigation/native';
+import { Movie } from '../../apis/apis';
 
 interface SlideProps {
   backdropPath: string;
@@ -13,15 +14,10 @@ interface SlideProps {
   originalTitle: string;
   voteAverage: number;
   overview: string;
+  fullData: Movie;
 }
 
-const Slide: React.FC<SlideProps> = ({
-  backdropPath,
-  posterPath,
-  originalTitle,
-  voteAverage,
-  overview,
-}) => {
+const Slide: React.FC<SlideProps> = ({ backdropPath, posterPath, originalTitle, voteAverage, overview, fullData }) => {
   const isDark = useColorScheme() === 'dark';
   const navigation = useNavigation();
   const goToDetail = () => {
@@ -29,7 +25,7 @@ const Slide: React.FC<SlideProps> = ({
     navigation.navigate('Stack', {
       screen: 'Detail',
       params: {
-        originalTitle,
+        ...fullData,
       },
     });
   };
@@ -42,12 +38,8 @@ const Slide: React.FC<SlideProps> = ({
             <Poster path={posterPath} />
             <Column>
               <Title isDark={isDark}>{originalTitle}</Title>
-              <Votes isDark={isDark}>
-                {voteAverage > 0 ? `⭐️ ${voteAverage} / 10` : 'Coming soon'}
-              </Votes>
-              <Overview isDark={isDark}>
-                {overview.length > 90 ? overview.slice(0, 90) + '...' : overview}
-              </Overview>
+              <Votes isDark={isDark}>{voteAverage > 0 ? `⭐️ ${voteAverage} / 10` : 'Coming soon'}</Votes>
+              <Overview isDark={isDark}>{overview.length > 90 ? overview.slice(0, 90) + '...' : overview}</Overview>
             </Column>
           </Wrapper>
         </BlurView>

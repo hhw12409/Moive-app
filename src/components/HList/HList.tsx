@@ -1,29 +1,14 @@
-import React, { memo } from "react";
-import { FlatList } from "react-native";
-import { ListContainer } from "../@shared/ListContainer/ListContainer.styles";
-import { ListTitle } from "../@shared/ListTitle/ListTitle.styles";
-import { Seperator } from "../@shared/Seperator/Seperator.styles";
-import HMedia from "../HMedia/HMedia";
+import React, { memo } from 'react';
+import { FlatList, VirtualizedList } from 'react-native';
+import { ListContainer } from '../@shared/ListContainer/ListContainer.styles';
+import { ListTitle } from '../@shared/ListTitle/ListTitle.styles';
+import { Seperator } from '../@shared/Seperator/Seperator.styles';
+import HMedia from '../HMedia/HMedia';
+import { Movie, TV } from '../../apis/apis';
 
-// interface Tv {
-//   backdrop_path: string | null;
-//   first_air_date?: string;
-//   genre_ids: number[];
-//   id: number;
-//   name?: string;
-//   origin_country?: string[];
-//   original_language: string;
-//   original_name?: string;
-//   original_title: string;
-//   overview: string;
-//   popularity: number;
-//   poster_path: string | null;
-//   vote_average: number;
-//   vote_count: number;
-// }
 interface HListProps {
   title: string;
-  data: any[];
+  data: Movie[] | TV[];
 }
 
 const HList: React.FC<HListProps> = ({ title, data }) => {
@@ -36,12 +21,13 @@ const HList: React.FC<HListProps> = ({ title, data }) => {
         contentContainerStyle={{ paddingHorizontal: 30 }}
         ItemSeparatorComponent={() => <Seperator width="20px" />}
         data={data}
-        keyExtractor={(item) => String(item.id)}
-        renderItem={({ item }) => (
+        keyExtractor={(item: Movie | TV) => String(item.id)}
+        renderItem={({ item }: { item: Movie | TV }) => (
           <HMedia
-            posterPath={item.poster_path || ""}
-            originalTitle={item.original_title ?? item.original_name}
+            posterPath={item.poster_path || ''}
+            originalTitle={'original_title' in item ? item.original_title : item.original_name}
             voteAverage={item.vote_average}
+            fullData={item}
           />
         )}
       />
