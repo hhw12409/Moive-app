@@ -4,8 +4,8 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Dimensions, FlatList, View } from 'react-native';
 import Slide from '../../components/Slide/Slide';
 import VMedia from '../../components/VMedia/VMedia';
-import { QueryClient, useQuery } from '@tanstack/react-query';
-import { MoiveResponse, moviesApi } from '../../apis/apis';
+import { QueryClient, useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { MovieResponse, moviesApi } from '../../apis/apis';
 import Loader from '../../components/Loader/Loader';
 import { ListContainer } from '../../components/@shared/ListContainer/ListContainer.styles';
 import { ComingSoonTitle } from '../../components/@shared/ComingSoonTitle/ComingSoonTitle.styles';
@@ -18,15 +18,23 @@ const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 const Movies: React.FC<NativeStackScreenProps<any, 'Movies'>> = () => {
   const [refreshing, setRefreshing] = useState(false);
-  const { isLoading: nowPlayingLoading, data: nowPlayingData } = useQuery<MoiveResponse>(
+  const { isLoading: nowPlayingLoading, data: nowPlayingData } = useQuery<MovieResponse>(
     ['movies', 'nowPlaying'],
     moviesApi.getNowPlaying
   );
-  const { isLoading: upcomingLoading, data: upcomingData } = useQuery<MoiveResponse>(
-    ['movies', 'upcoming'],
-    moviesApi.getUpComing
-  );
-  const { isLoading: trendingLoading, data: trendingData } = useQuery<MoiveResponse>(
+  const {
+    isLoading: upcomingLoading,
+    data: upcomingData,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery<MovieResponse>(['movies', 'upcoming'], moviesApi.getUpComing, {
+    getNextPageParam: (currentPage) => {
+      const nextPage = currentPage.page + 1;
+      return nextPage > currentPage.total_pages ? null : nextPage;
+    },
+  });
+  const { isLoading: trendingLoading, data: trendingData } = useQuery<MovieResponse>(
     ['movies', 'trending'],
     moviesApi.getTrending
   );
@@ -38,16 +46,27 @@ const Movies: React.FC<NativeStackScreenProps<any, 'Movies'>> = () => {
   };
 
   const loading = nowPlayingLoading || upcomingLoading || trendingLoading;
+  const loadMore = () => {
+    if (hasNextPage) {
+      fetchNextPage();
+    }
+  };
+
+  const renderFooterComponent = (isFetchingNextPage: boolean) => {
+    return isFetchingNextPage ? <Loader /> : null;
+  };
 
   return loading ? (
     <Loader />
   ) : (
     <FlatList
+      onEndReached={loadMore}
       onRefresh={onRefresh}
       refreshing={refreshing}
       keyExtractor={(item) => String(item.id)}
-      data={upcomingData!.results}
+      data={upcomingData!.pages.map((page) => page.results).flat()}
       ItemSeparatorComponent={() => <Seperator height="20px" />}
+      ListFooterComponent={renderFooterComponent(isFetchingNextPage)}
       ListHeaderComponent={
         <>
           <Swiper

@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect } from 'react';
-import { StyleSheet, Linking, Share, Platform } from 'react-native';
-import { Movie, moviesApi, TV, tvApi } from '../../apis/apis';
+import { StyleSheet, Share, Platform } from 'react-native';
+import { Movie, MovieDetails, TVDetails, moviesApi, TV, tvApi } from '../../apis/apis';
 import Poster from '../../components/Poster/Poster';
 import { makeImagePath } from '../../utils/utils';
 import { Container, Header, Background, Column, Title, Overview, VideoBtn, BtnText, Data } from './Detail.styles';
@@ -22,13 +22,13 @@ type DetailScreenProps = NativeStackScreenProps<RootStackParamList, 'Detail'>;
 
 const Detail: React.FC<DetailScreenProps> = ({ navigation: { setOptions }, route: { params } }) => {
   const isMovie = 'original_title' in params;
-  const { isLoading, data } = useQuery(
+  const { isLoading, data } = useQuery<MovieDetails | TVDetails>(
     [isMovie ? 'movies' : 'tv', params.id],
     isMovie ? moviesApi.detail : tvApi.detail
   );
   const shareMedia = async () => {
     const isAndroid = Platform.OS === 'android';
-    const homepage = isMovie ? `https://www.imdb.com/title/${data.imdb_id}` : data.homepage;
+    const homepage = isMovie && 'imdb_id' in data! ? `https://www.imdb.com/title/${data.imdb_id}` : data!.homepage;
     if (isAndroid) {
       await Share.share({
         message: `${params.overview}\n Check it out : ${homepage}`,
@@ -74,7 +74,7 @@ const Detail: React.FC<DetailScreenProps> = ({ navigation: { setOptions }, route
       <Data>
         <Overview>{params.overview}</Overview>
         {isLoading ? <Loader /> : null}
-        {data?.videos?.results?.map((video: any) => (
+        {data?.videos?.results?.map((video) => (
           <VideoBtn key={video.key} onPress={() => openYoutubeLink(video.key)}>
             <Ionicons name="logo-youtube" color="white" size={24} />
             <BtnText>{video.name}</BtnText>
