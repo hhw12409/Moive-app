@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react";
-import * as Font from "expo-font";
-import { Ionicons } from "@expo/vector-icons";
-import { NavigationContainer } from "@react-navigation/native";
-import Root from "./src/navigation/Root";
-import { useColorScheme } from "react-native";
-import { ThemeProvider } from "styled-components";
-import { darkTheme, lightTheme } from "./theme";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import React, { useState, useEffect } from 'react';
+import * as Font from 'expo-font';
+import { Ionicons } from '@expo/vector-icons';
+import { NavigationContainer } from '@react-navigation/native';
+import Root from './src/navigation/Root';
+import { useColorScheme } from 'react-native';
+import { ThemeProvider } from 'styled-components';
+import { darkTheme, lightTheme } from './theme';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const queryClient = new QueryClient();
 
@@ -25,7 +25,7 @@ export default function App() {
     prepare();
   }, []);
 
-  const isDark = useColorScheme() === "dark";
+  const isDark = useColorScheme() === 'dark';
   if (!appIsReady) {
     return null;
   }

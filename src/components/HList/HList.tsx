@@ -20,6 +20,7 @@ const HList: React.FC<HListProps> = ({ title, data }) => {
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ paddingHorizontal: 30 }}
         ItemSeparatorComponent={() => <Seperator width="20px" />}
+        //@ts-ignore
         data={data}
         keyExtractor={(item: Movie | TV) => String(item.id)}
         renderItem={({ item }: { item: Movie | TV }) => (
